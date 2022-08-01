@@ -1,6 +1,6 @@
 const { context } = require('@actions/github');
 
-function buildSlackAttachments({ status, color, branch, commit, projectName, actor, repoUrl }) {
+function buildSlackAttachments({ status, color, projectName, actor, repoUrl }) {
   const { owner, repo } = context.repo;
   repoUrl = repoUrl || `https://github.com/${owner}/${repo}`;
 
@@ -15,12 +15,12 @@ function buildSlackAttachments({ status, color, branch, commit, projectName, act
         },
         {
           title: 'Release',
-          value: `<${repoUrl}/tree/${branch} | ${branch}>`,
+          value: `<${repoUrl}/tree/${process.env.GITHUB_REF_NAME} | ${process.env.GITHUB_REF_NAME}>`,
           short: true,
         },
         {
           title: 'Version',
-          value: `${commit && commit.length >= 6 ? commit.substring(0, 6) : commit}`,
+          value: `${process.env.GITHUB_SHA.substring(0, 6)}`,
           short: true
         },
         {

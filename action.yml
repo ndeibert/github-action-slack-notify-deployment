@@ -22,7 +22,7 @@ inputs:
     required: false
   tag:
     description: 'Tag of the Docker image being deployed.'
-    required: true
+    required: false
   project_name:
     description: 'Override the project name.'
     required: false

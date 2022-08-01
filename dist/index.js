@@ -6,7 +6,7 @@
 
 const { context } = __nccwpck_require__(484);
 
-function buildSlackAttachments({ status, color, branch, commit, projectName, actor, repoUrl }) {
+function buildSlackAttachments({ status, color, projectName, actor, repoUrl }) {
   const { owner, repo } = context.repo;
   repoUrl = repoUrl || `https://github.com/${owner}/${repo}`;
 
@@ -21,12 +21,12 @@ function buildSlackAttachments({ status, color, branch, commit, projectName, act
         },
         {
           title: 'Release',
-          value: `<${repoUrl}/tree/${branch} | ${branch}>`,
+          value: `<${repoUrl}/tree/${process.env.GITHUB_REF_NAME} | ${process.env.GITHUB_REF_NAME}>`,
           short: true,
         },
         {
           title: 'Version',
-          value: `${commit && commit.length >= 6 ? commit.substring(0, 6) : commit}`,
+          value: `${process.env.GITHUB_SHA.substring(0, 6)}`,
           short: true
         },
         {
@@ -133,8 +133,6 @@ const { buildSlackAttachments, formatChannelName } = __nccwpck_require__(903);
     const status = core.getInput('status');
     const color = core.getInput('color');
     const messageId = core.getInput('message_id');
-    const branch = core.getInput('branch');
-    const commit = core.getInput('commit');
     const projectName = core.getInput('project_name');
     const actor = core.getInput('actor');
     const repoUrl = core.getInput('repo_url');
@@ -146,7 +144,7 @@ const { buildSlackAttachments, formatChannelName } = __nccwpck_require__(903);
       return;
     }
 
-    const attachments = buildSlackAttachments({ status, color, branch, commit, projectName, actor, repoUrl });
+    const attachments = buildSlackAttachments({ status, color, projectName, actor, repoUrl });
     const channelId = core.getInput('channel_id') || (await lookUpChannelId({ slack, channel }));
 
     if (!channelId) {
